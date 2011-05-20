@@ -1,8 +1,7 @@
-# ==========================================================================
-# Project:   Car
-# Copyright: @2011 My Company, Inc.
-# ==========================================================================
-
-# Add initial buildfile information here
-config :all, :required => "sproutcore/core_foundation", :theme => "sproutcore/empty_theme"
+config :all,
+  :theme => "sproutcore/empty_theme",
+  :required => [
+    "sproutcore/core_foundation",
+    "sproutcore/statechart"
+  ]
 
