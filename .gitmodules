@@ -1,0 +1,3 @@
+[submodule "car/frameworks/sproutcore"]
+	path = car/frameworks/sproutcore
+	url = https://github.com/sproutcore/sproutcore.git
