@@ -44,6 +44,14 @@ Car.statechart = SC.Statechart.create({
     on: SC.State.design({
       substatesAreConcurrent: true,
 
+      enterState: function() {
+        jQuery('body').addClass('car-on');
+      },
+
+      exitState: function() {
+        jQuery('body').removeClass('car-on');
+      },
+
       drivetrain: SC.State.design({
         initialSubstate: 'stopped',
 
@@ -227,7 +235,9 @@ Car.statechart = SC.Statechart.create({
 
 Car.speedometerView = SC.TemplateView.create({
   layerId: 'speedometer',
-  speedBinding: 'Car.speed'
+  speedBinding: SC.Binding.from('Car.speed').transform(function(v) {
+    return v < 10 ? '0' + v : v;
+  })
 });
 
 Car.Button = SC.Button.extend({
@@ -246,6 +256,7 @@ Car.Button = SC.Button.extend({
 
 Car.ignitionButtonView = Car.Button.create({
   title: '',
+  layerId: 'ignition-button',
   target: Car.statechart,
   action: 'toggleIgnition',
   mouseUp: function() {
@@ -255,6 +266,7 @@ Car.ignitionButtonView = Car.Button.create({
 });
 
 Car.PedalView = Car.Button.extend({
+  classNames: 'pedal-view',
   event: '',
 
   mouseDown: function() {
@@ -318,6 +330,7 @@ Car.radioModeView = SC.TemplateView.create({
 });
 
 Car.currentStatesView = SC.TemplateView.create({
+  classNames: 'current-states',
   currentStatesBinding: 'Car.statechart.currentStateNames'
 });
 

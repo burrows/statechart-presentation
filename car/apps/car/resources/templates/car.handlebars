@@ -1,20 +1,23 @@
-{{#view Car.speedometerView}} {{speed}} {{/view}}
+{{#view Car.speedometerView}}
+  {{speed}}
+  {{#view Car.currentStatesView}}
+    {{currentStates}}
+  {{/view}}
+{{/view}}
 
-{{view Car.ignitionButtonView}}
+<div id="controls">
+  {{view Car.brakePedalView }}
+  {{view Car.gasPedalView }}
+  {{view Car.ignitionButtonView}}
+  <div class="clear-both"></div>
+</div>
 
-{{view Car.gasPedalView }}
-{{view Car.brakePedalView }}
-
+<div id="radio">
 {{view Car.radioButtonView}}
 {{#view Car.radioModeView}}
-<input type="radio" name="radio-mode" value="am" />AM
-<input type="radio" name="radio-mode" value="fm" />FM
-<input type="radio" name="radio-mode" value="cd" />CD
+  <input type="radio" name="radio-mode" value="am" />AM
+  <input type="radio" name="radio-mode" value="fm" />FM
+  <input type="radio" name="radio-mode" value="cd" />CD
 {{/view}}
-{{!view Car.radioView}} {{!mode}} {{!/view}}
-
-{{#view Car.currentStatesView}}
-  {{currentStates}}
-{{/view}}
-{{Car.statechart.currentStates}}
+</div>
 
