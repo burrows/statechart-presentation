@@ -133,7 +133,23 @@ Car.statechart = SC.Statechart.create({
         })
       })
     })
-  })
+  }),
+
+  currentStateNames: function() {
+    if (!this.get('statechartIsInitialized')) {
+      return '-';
+    }
+
+    return this.get('currentStates').map(function(s) {
+      var path = [];
+
+      for (; s.get('name') !== '__ROOT_STATE__'; s = s.get('parentState')) {
+        path.push(s.get('name'));
+      }
+
+      return path.reverse().join('.');
+    }).join(', ');
+  }.property('currentStates').cacheable(),
 });
 
 //------------------------------------------------------------------------------
@@ -195,6 +211,10 @@ Car.brakePedalView = Car.PedalView.create({
 
 Car.gasPedalView = Car.PedalView.create({
   title: 'Gas', event: 'gas'
+});
+
+Car.currentStatesView = SC.TemplateView.create({
+  currentStatesBinding: 'Car.statechart.currentStateNames'
 });
 
 SC.ready(function() { Car.statechart.initStatechart(); });
