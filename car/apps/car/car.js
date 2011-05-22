@@ -42,94 +42,163 @@ Car.statechart = SC.Statechart.create({
     }),
 
     on: SC.State.design({
-      initialSubstate: 'stopped',
+      substatesAreConcurrent: true,
 
-      enterState: function() {
-        Car.ignitionButtonView.set('title', 'Turn Off');
-        Car.gasPedalView.set('isDisabled', false);
-        Car.brakePedalView.set('isDisabled', false);
-      },
+      drivetrain: SC.State.design({
+        initialSubstate: 'stopped',
 
-      toggleIgnition: function() { this.gotoState('off'); },
-
-      stopped: SC.State.design({
         enterState: function() {
-          Car.ignitionButtonView.set('isDisabled', false);
+          Car.ignitionButtonView.set('title', 'Turn Off');
+          Car.gasPedalView.set('isDisabled', false);
+          Car.brakePedalView.set('isDisabled', false);
         },
 
-        gasOn: function() { this.gotoState('on.moving'); }
+        toggleIgnition: function() { this.gotoState('off'); },
+
+        stopped: SC.State.design({
+          enterState: function() {
+            Car.ignitionButtonView.set('isDisabled', false);
+          },
+
+          gasOn: function() { this.gotoState('on.drivetrain.moving'); }
+        }),
+
+        moving: SC.State.design({
+          initialSubstate: 'accelerating',
+
+          enterState: function() {
+            Car.ignitionButtonView.set('isDisabled', true);
+          },
+
+          stoppedMoving: function() {
+            this.gotoState('on.drivetrain.stopped');
+          },
+
+          accelerating: SC.State.design({
+            enterState: function() {
+              this._accelerateTimer = SC.Timer.schedule({
+                target: Car,
+                action: '_incrementSpeed',
+                interval: 500,
+                repeats: true
+              })
+            },
+
+            exitState: function() {
+              this._accelerateTimer.invalidate();
+            },
+
+            gasOff: function() {
+              this.gotoState('on.drivetrain.moving.idle');
+            }
+          }),
+
+          idle: SC.State.design({
+            enterState: function() {
+              this._idleTimer = SC.Timer.schedule({
+                target: Car,
+                action: '_decrementSpeed',
+                interval: 2000,
+                repeats: true
+              });
+            },
+
+            exitState: function() {
+              this._idleTimer.invalidate();
+            },
+
+            gasOn: function() {
+              this.gotoState('on.drivetrain.moving.accelerating');
+            },
+
+            brakeOn: function() {
+              this.gotoState('on.drivetrain.moving.braking');
+            }
+          }),
+
+          braking: SC.State.design({
+            enterState: function() {
+              this._brakeTimer = SC.Timer.schedule({
+                target: Car,
+                action: '_decrementSpeed',
+                interval: 200,
+                repeats: true
+              });
+            },
+
+            exitState: function() {
+              this._brakeTimer.invalidate();
+            },
+
+            brakeOff: function() {
+              this.gotoState('on.drivetrain.moving.idle');
+            }
+          })
+        })
       }),
 
-      moving: SC.State.design({
-        initialSubstate: 'accelerating',
+      radio: SC.State.design({
+        initialSubstate: SC.HistoryState.design({
+          defaultState: 'off'
+        }),
 
         enterState: function() {
-          Car.ignitionButtonView.set('isDisabled', true);
+          Car.radioButtonView.set('isVisible', true);
         },
 
-        stoppedMoving: function() {
-          this.gotoState('on.stopped');
+        exitState: function() {
+          Car.radioButtonView.set('isVisible', false);
         },
 
-        accelerating: SC.State.design({
+        off: SC.State.design({
           enterState: function() {
-            this._accelerateTimer = SC.Timer.schedule({
-              target: Car,
-              action: '_incrementSpeed',
-              interval: 500,
-              repeats: true
-            })
+            Car.radioButtonView.set('title', 'Radio On');
           },
 
-          exitState: function() {
-            this._accelerateTimer.invalidate();
-          },
-
-          gasOff: function() {
-            this.gotoState('on.moving.idle');
+          toggleRadio: function() {
+            this.gotoHistoryState('on.radio.on');
           }
         }),
 
-        idle: SC.State.design({
+        on: SC.State.design({
+          initialSubstate: SC.HistoryState.design({
+            defaultState: 'am'
+          }),
+
           enterState: function() {
-            this._idleTimer = SC.Timer.schedule({
-              target: Car,
-              action: '_decrementSpeed',
-              interval: 2000,
-              repeats: true
-            });
+            Car.radioButtonView.set('title', 'Radio Off');
+            Car.radioModeView.set('isVisible', true);
           },
 
           exitState: function() {
-            this._idleTimer.invalidate();
+            Car.radioModeView.set('isVisible', false);
           },
 
-          gasOn: function() {
-            this.gotoState('on.moving.accelerating');
+          toggleRadio: function() {
+            this.gotoState('on.radio.off');
           },
 
-          brakeOn: function() {
-            this.gotoState('on.moving.braking');
-          }
-        }),
-
-        braking: SC.State.design({
-          enterState: function() {
-            this._brakeTimer = SC.Timer.schedule({
-              target: Car,
-              action: '_decrementSpeed',
-              interval: 200,
-              repeats: true
-            });
+          toggleRadioMode: function(mode) {
+            this.gotoState('on.radio.on.%@'.fmt(mode));
           },
 
-          exitState: function() {
-            this._brakeTimer.invalidate();
-          },
+          am: SC.State.design({
+            enterState: function() {
+              Car.radioModeView.set('value', 'am');
+            }
+          }),
 
-          brakeOff: function() {
-            this.gotoState('on.moving.idle');
-          }
+          fm: SC.State.design({
+            enterState: function() {
+              Car.radioModeView.set('value', 'fm');
+            }
+          }),
+
+          cd: SC.State.design({
+            enterState: function() {
+              Car.radioModeView.set('value', 'cd');
+            }
+          })
         })
       })
     })
@@ -211,6 +280,41 @@ Car.brakePedalView = Car.PedalView.create({
 
 Car.gasPedalView = Car.PedalView.create({
   title: 'Gas', event: 'gas'
+});
+
+Car.radioButtonView = Car.Button.create({
+  title: 'Radio On',
+  isVisible: false,
+  target: Car.statechart,
+  action: 'toggleRadio',
+  mouseUp: function() {
+    if (this.get('isDisabled')) { return; }
+    sc_super();
+  }
+});
+
+Car.radioModeView = SC.TemplateView.create({
+  isVisible: false,
+  value: 'am',
+
+  didCreateLayer: function() {
+    this.addObserver('value', this, '_valueDidChange');
+    this._valueDidChange();
+  },
+
+  mouseDown: function(evt) {
+    var elem = jQuery(evt.target);
+
+    if (elem.is('input[type=radio]')) {
+      this.set('value', elem.val());
+      Car.statechart.sendEvent('toggleRadioMode', this.get('value'));
+    }
+  },
+
+  _valueDidChange: function() {
+    var value = this.get('value');
+    this.$('input[value=%@]'.fmt(value)).attr('checked', true);
+  }
 });
 
 Car.currentStatesView = SC.TemplateView.create({

@@ -5,6 +5,14 @@
 {{view Car.gasPedalView }}
 {{view Car.brakePedalView }}
 
+{{view Car.radioButtonView}}
+{{#view Car.radioModeView}}
+<input type="radio" name="radio-mode" value="am" />AM
+<input type="radio" name="radio-mode" value="fm" />FM
+<input type="radio" name="radio-mode" value="cd" />CD
+{{/view}}
+{{!view Car.radioView}} {{!mode}} {{!/view}}
+
 {{#view Car.currentStatesView}}
   {{currentStates}}
 {{/view}}
