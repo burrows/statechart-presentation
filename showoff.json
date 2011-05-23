@@ -1,0 +1,7 @@
+{
+  "name": "Statecharts",
+  "description": "Statechart presentation for the 2011-5-24 Chicago SproutCore meetup.",
+  "sections": [
+    {"section":"one"}
+  ]
+}

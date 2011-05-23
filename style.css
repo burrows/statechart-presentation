@@ -1,0 +1,17 @@
+.bullets ul {
+  list-style-type: square;
+  margin-left: 1em;
+  padding-left: 1em;
+}
+
+.bullets ul li {
+  text-align: left;
+}
+
+pre.sh_sourceCode {
+  background-color: #ccc;
+  -webkit-border-radius: 5px;
+  padding: 0.5em;
+  margin-right: 40px;
+  line-height: 1.3em;
+}
