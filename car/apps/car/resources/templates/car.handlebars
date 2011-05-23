@@ -16,9 +16,9 @@
   <div id="radio-controls">
     {{view Car.radioButtonView}}
     {{#view Car.radioModeView}}
-      <input type="radio" name="radio-mode" value="am" />AM<br/>
-      <input type="radio" name="radio-mode" value="fm" />FM<br/>
-      <input type="radio" name="radio-mode" value="cd" />CD
+      <input type="radio" name="radio-mode" id="radio-am" value="am" /><label for="radio-am">AM</label><br/>
+      <input type="radio" name="radio-mode" id="radio-fm" value="fm" /><label for="radio-fm">FM</label><br/>
+      <input type="radio" name="radio-mode" id="radio-cd" value="cd" /><label for="radio-cd">CD</label>
       {{displayValue}}
     {{/view}}
   </div>

@@ -313,17 +313,15 @@ Car.radioModeView = SC.TemplateView.create({
   didCreateLayer: function() {
     this.addObserver('value', this, '_valueDidChange');
     this.addObserver('isDisabled', this, '_isDisabledDidChange');
+    this.$('input').bind('change', jQuery.proxy(this._inputValueDidChange, this));
     this._valueDidChange();
     this._isDisabledDidChange();
   },
 
-  mouseDown: function(evt) {
-    var elem = jQuery(evt.target);
-
-    if (elem.is('input[type=radio]')) {
-      this.set('value', elem.val());
-      Car.statechart.sendEvent('toggleRadioMode', this.get('value'));
-    }
+  _inputValueDidChange: function(evt) {
+    var elem = jQuery(evt.target), val = elem.val();
+    this.set('value', val);
+    Car.statechart.sendEvent('toggleRadioMode', val);
   },
 
   _valueDidChange: function() {
@@ -339,7 +337,7 @@ Car.radioModeView = SC.TemplateView.create({
 Car.radioDisplayView = SC.TemplateView.create({
   layerId: 'radio-display',
   classNames: 'digital-display',
-  value: ''
+  value: '---'
 });
 
 Car.currentStatesView = SC.TemplateView.create({
