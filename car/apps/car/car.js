@@ -155,6 +155,7 @@ Car.statechart = SC.Statechart.create({
         off: SC.State.design({
           enterState: function() {
             Car.radioButtonView.set('title', 'Radio On');
+            Car.radioModeView.set('isDisabled', true);
             Car.radioDisplayView.set('value', '---');
           },
 
@@ -170,6 +171,13 @@ Car.statechart = SC.Statechart.create({
 
           enterState: function() {
             Car.radioButtonView.set('title', 'Radio Off');
+            Car.radioModeView.set('isDisabled', false);
+          },
+
+          exitState: function() {
+            Car.radioButtonView.set('title', 'Radio On');
+            Car.radioModeView.set('isDisabled', true);
+            Car.radioDisplayView.set('value', '---');
           },
 
           toggleRadio: function() {
@@ -300,10 +308,13 @@ Car.radioButtonView = Car.Button.create({
 
 Car.radioModeView = SC.TemplateView.create({
   value: 'am',
+  isDisabled: true,
 
   didCreateLayer: function() {
     this.addObserver('value', this, '_valueDidChange');
+    this.addObserver('isDisabled', this, '_isDisabledDidChange');
     this._valueDidChange();
+    this._isDisabledDidChange();
   },
 
   mouseDown: function(evt) {
@@ -318,6 +329,10 @@ Car.radioModeView = SC.TemplateView.create({
   _valueDidChange: function() {
     var value = this.get('value');
     this.$('input[value=%@]'.fmt(value)).attr('checked', true);
+  },
+
+  _isDisabledDidChange: function() {
+    this.$('input').attr('disabled', this.get('isDisabled'));
   }
 });
 
