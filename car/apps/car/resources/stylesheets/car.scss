@@ -1,3 +1,5 @@
+$display-color: #089cff;
+
 .sc-view {
   position: relative;
   overflow: visible;
@@ -25,18 +27,18 @@
   background-color: #000;
   -webkit-border-radius: 20px;
 
-  span {
-    color: #089cff;
-    opacity: 0.4;
-  }
-
   .current-states {
     font-size: 12px;
     line-height: 12px;
   }
 }
 
-.car-on #speedometer span {
+.digital-display span {
+  color: $display-color;
+  opacity: 0.4;
+}
+
+.car-on .digital-display span {
   opacity: 1;
 }
 
@@ -50,5 +52,27 @@
 
   #ignition-button {
     float: right;
+  }
+}
+
+#radio {
+  margin: 20px auto 0 auto;
+  width: 600px;
+
+  #radio-controls {
+    float: left;
+    width: 80px;
+  }
+
+  #radio-display {
+    float: left;
+    width: 520px;
+    height: 72px;
+    background-color: #000;
+    -webkit-border-radius: 20px;
+    color: $display-color;
+    font: 60px DigitaldreamFatRegular;
+    line-height: 72px;
+    text-align: center;
   }
 }

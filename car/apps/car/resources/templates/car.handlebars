@@ -13,11 +13,15 @@
 </div>
 
 <div id="radio">
-{{view Car.radioButtonView}}
-{{#view Car.radioModeView}}
-  <input type="radio" name="radio-mode" value="am" />AM
-  <input type="radio" name="radio-mode" value="fm" />FM
-  <input type="radio" name="radio-mode" value="cd" />CD
-{{/view}}
+  <div id="radio-controls">
+    {{view Car.radioButtonView}}
+    {{#view Car.radioModeView}}
+      <input type="radio" name="radio-mode" value="am" />AM<br/>
+      <input type="radio" name="radio-mode" value="fm" />FM<br/>
+      <input type="radio" name="radio-mode" value="cd" />CD
+      {{displayValue}}
+    {{/view}}
+  </div>
+  {{#view Car.radioDisplayView}} {{value}} {{/view}}
+  <div class="clear-both"></div>
 </div>
-

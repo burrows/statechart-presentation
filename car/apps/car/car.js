@@ -36,6 +36,7 @@ Car.statechart = SC.Statechart.create({
         Car.ignitionButtonView.set('isDisabled', false);
         Car.gasPedalView.set('isDisabled', true);
         Car.brakePedalView.set('isDisabled', true);
+        Car.radioButtonView.set('isDisabled', true);
       },
 
       toggleIgnition: function() { this.gotoState('on'); }
@@ -46,6 +47,7 @@ Car.statechart = SC.Statechart.create({
 
       enterState: function() {
         jQuery('body').addClass('car-on');
+        Car.radioButtonView.set('isDisabled', false);
       },
 
       exitState: function() {
@@ -150,21 +152,14 @@ Car.statechart = SC.Statechart.create({
           defaultState: 'off'
         }),
 
-        enterState: function() {
-          Car.radioButtonView.set('isVisible', true);
-        },
-
-        exitState: function() {
-          Car.radioButtonView.set('isVisible', false);
-        },
-
         off: SC.State.design({
           enterState: function() {
             Car.radioButtonView.set('title', 'Radio On');
+            Car.radioDisplayView.set('value', '---');
           },
 
           toggleRadio: function() {
-            this.gotoHistoryState('on.radio.on');
+            this.gotoState('on.radio.on');
           }
         }),
 
@@ -175,11 +170,6 @@ Car.statechart = SC.Statechart.create({
 
           enterState: function() {
             Car.radioButtonView.set('title', 'Radio Off');
-            Car.radioModeView.set('isVisible', true);
-          },
-
-          exitState: function() {
-            Car.radioModeView.set('isVisible', false);
           },
 
           toggleRadio: function() {
@@ -193,18 +183,21 @@ Car.statechart = SC.Statechart.create({
           am: SC.State.design({
             enterState: function() {
               Car.radioModeView.set('value', 'am');
+              Car.radioDisplayView.set('value', '1000 AM');
             }
           }),
 
           fm: SC.State.design({
             enterState: function() {
               Car.radioModeView.set('value', 'fm');
+              Car.radioDisplayView.set('value', '97.7 FM');
             }
           }),
 
           cd: SC.State.design({
             enterState: function() {
               Car.radioModeView.set('value', 'cd');
+              Car.radioDisplayView.set('value', 'CD');
             }
           })
         })
@@ -225,7 +218,7 @@ Car.statechart = SC.Statechart.create({
       }
 
       return path.reverse().join('.');
-    }).join(', ');
+    }).sort().join(', ');
   }.property('currentStates').cacheable(),
 });
 
@@ -235,6 +228,7 @@ Car.statechart = SC.Statechart.create({
 
 Car.speedometerView = SC.TemplateView.create({
   layerId: 'speedometer',
+  classNames: 'digital-display',
   speedBinding: SC.Binding.from('Car.speed').transform(function(v) {
     return v < 10 ? '0' + v : v;
   })
@@ -296,7 +290,6 @@ Car.gasPedalView = Car.PedalView.create({
 
 Car.radioButtonView = Car.Button.create({
   title: 'Radio On',
-  isVisible: false,
   target: Car.statechart,
   action: 'toggleRadio',
   mouseUp: function() {
@@ -306,7 +299,6 @@ Car.radioButtonView = Car.Button.create({
 });
 
 Car.radioModeView = SC.TemplateView.create({
-  isVisible: false,
   value: 'am',
 
   didCreateLayer: function() {
@@ -329,9 +321,16 @@ Car.radioModeView = SC.TemplateView.create({
   }
 });
 
+Car.radioDisplayView = SC.TemplateView.create({
+  layerId: 'radio-display',
+  classNames: 'digital-display',
+  value: ''
+});
+
 Car.currentStatesView = SC.TemplateView.create({
   classNames: 'current-states',
   currentStatesBinding: 'Car.statechart.currentStateNames'
 });
 
 SC.ready(function() { Car.statechart.initStatechart(); });
+
