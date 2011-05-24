@@ -59,8 +59,18 @@
 ![car-fsm3](car-fsm3.png) 
 
 !SLIDE center
+# FSM Car example
+![car-fsm4](car-fsm4.png) 
+
+!SLIDE center
 # Solution: Statecharts!
 ![basic-car-statechart](basic-car-statechart.png) 
+
+!SLIDE bullets
+# What is a statechart?
+
+* A visual diagram for describing the behavior of a system.
+* `SC.Statechart` - A framework for SproutCore that provides an API for defining and interacting with a statechart object.
 
 !SLIDE bullets
 # Features
