@@ -19,11 +19,13 @@
 # The naive way
 
     @@@ javascript
-    submitOrderButton: SC.ButtonView.create({
-      isEnabled: function() {
-        return MyApp.userController.get('isAuthenticated') &&
-               MyApp.creditCarController.get('isValid') &&
-               MyApp.orderController.get('allItemsInStock');
+    ignitionButton: SC.ButtonView.create({
+      title: function() {
+        return Car.get('isOn') ? 'Turn Off' : 'Turn On';
+      }.property(),
+
+      isDisabled: function() {
+        return !Car.get('keyIn') || Car.get('isMoving');
       }.property()
     })
 
@@ -98,8 +100,37 @@
 !SLIDE bullets
 # Events
 
+* When an event is sent to the statechart, each current state is given the opportunity to handle it. 
+
 !SLIDE bullets
-# Transitions
+# Transistions
+* When a state handles an event, it typically triggers a state transition.
+* Transitions start from the current state causing the transition and traverse up to the pivot state, triggering exit state handlers along the way.
+* From the pivot state, child states are traversed, triggering enter state handlers until the final substate is reached.
+
+!SLIDE center
+### `C1.2 -> C2.1`
+![transition-ex1](transition-ex1.png)
+
+!SLIDE center
+### `C1.2 -> C2.1`
+![transition-ex2](transition-ex2.png)
+
+!SLIDE center
+### `C1.2 -> C2.1`
+![transition-ex3](transition-ex3.png)
+
+!SLIDE center
+### `(W.P1.B, W.P2.D, W.P3.E) -> W.X.Z`
+![transition-ex4](transition-ex4.png)
+
+!SLIDE center
+### `(W.P1.B, W.P2.D, W.P3.E) -> W.X.Z`
+![transition-ex5](transition-ex5.png)
+
+!SLIDE center
+### `(W.P1.B, W.P2.D, W.P3.E) -> W.X.Z`
+![transition-ex6](transition-ex6.png)
 
 !SLIDE center
 # `SC.Statechart` example
