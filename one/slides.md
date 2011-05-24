@@ -1,19 +1,20 @@
 !SLIDE
 # Statecharts
+### Corey Burrows
+### May 24, 2011
 
 !SLIDE smaller
 # The Problem: How do you keep track of your application's state?
 
-!SLIDE
-# Quick Demo
-
 !SLIDE bullets incremental
 # What do we mean by _state_?
 
-* The exact configuration of your views at any given time.
-* E.g. When the car is turned on and the radio is turned on, the radio mode selector should be enabled.
+* An app's current state is the exact configuration of its views at any given time.
 * An app's state typically changes frequently.
 * State changes are triggered by _events_ and are called _transitions_.
+
+!SLIDE
+# Quick Demo
 
 !SLIDE small
 # So how do you implement this?
@@ -34,13 +35,6 @@
 
 * Each view is responsible for knowing its current state.
 * State logic is spread throughout the application.
-
-!SLIDE smaller bullets
-# The naive way
-
-* An app's state is calculated from a bunch of properties spread out across the app.
-* Becomes increasingly difficult to understand as complexity increases.
-* Difficult to change.
 * Quickly leads to spaghetti code.
 
 !SLIDE bullets
@@ -88,7 +82,7 @@
 * A parent state is the XOR of its substates.
 * To be in state P, one must be in either state C1 or state C2, but not both.
 * P is an abstraction of C1 and C2 and allows you to denote common properties of both in an economical way.
-* Substates are a refinement of their parent state.
+* **Important:** A statechart's current state must always be leaf state.
 
 ![hierarchy](hierarchy.png) 
 
@@ -113,12 +107,14 @@
 !SLIDE bullets
 # Events
 
+* Usually triggered by the user (e.g. clicking a button, focusing a field, etc.)
 * When an event is sent to the statechart, each current state is given the opportunity to handle it. 
+* Events bubble up the parent state chain.
 
 !SLIDE bullets
 # Transistions
 * When a state handles an event, it typically triggers a state transition.
-* Transitions start from the current state causing the transition and traverse up to the pivot state, triggering exit state handlers along the way.
+* Transitions start from the current state (or states) and traverse up to the pivot state, triggering exit state handlers along the way.
 * From the pivot state, child states are traversed, triggering enter state handlers until the final substate is reached.
 
 !SLIDE center
@@ -146,5 +142,16 @@
 ![transition-ex6](transition-ex6.png)
 
 !SLIDE center
+### `W.X.Z -> (W.P1.B, W.P2.D, W.P3.E)`
+![transition-ex7](transition-ex7.png)
+
+!SLIDE center
 # `SC.Statechart` example
 ![car-statechart](car-statechart.png) 
+
+!SLIDE bullets smaller
+# References
+
+* github.com/burrows/statechart-presentation
+* www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.pdf
+* www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.History.pdf 
