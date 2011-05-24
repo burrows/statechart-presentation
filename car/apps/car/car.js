@@ -3,10 +3,7 @@ Car = SC.Application.create({
 
   startAccelerating: function() {
     this._accelerateTimer = SC.Timer.schedule({
-      target: this,
-      action: '_incrementSpeed',
-      interval: 500,
-      repeats: true
+      target: this, action: '_incrementSpeed', interval: 500, repeats: true
     });
   },
 
@@ -14,10 +11,7 @@ Car = SC.Application.create({
 
   startBraking: function() {
     this._brakeTimer = SC.Timer.schedule({
-      target: this,
-      action: '_decrementSpeed',
-      interval: 200,
-      repeats: true
+      target: this, action: '_decrementSpeed', interval: 200, repeats: true
     });
   },
 
@@ -25,10 +19,7 @@ Car = SC.Application.create({
 
   startIdling: function() {
     this._idleTimer = SC.Timer.schedule({
-      target: Car,
-      action: '_decrementSpeed',
-      interval: 2000,
-      repeats: true
+      target: this, action: '_decrementSpeed', interval: 2000, repeats: true
     });
   },
 
@@ -53,8 +44,7 @@ Car.statechart = SC.Statechart.create({
 
     enterState: function() {
       Car.mainPane = SC.TemplatePane.append({
-        layerId: 'car',
-        templateName: 'car'
+        layerId: 'car', templateName: 'car'
       });
     },
 
@@ -112,9 +102,7 @@ Car.statechart = SC.Statechart.create({
 
             exitState: function() { Car.stopAccelerating(); },
 
-            gasOff: function() {
-              this.gotoState('on.drivetrain.moving.idle');
-            }
+            gasOff: function() { this.gotoState('on.drivetrain.moving.idle'); }
           }),
 
           idle: SC.State.design({
@@ -144,9 +132,7 @@ Car.statechart = SC.Statechart.create({
       }),
 
       radio: SC.State.design({
-        initialSubstate: SC.HistoryState.design({
-          defaultState: 'off'
-        }),
+        initialSubstate: SC.HistoryState.design({ defaultState: 'off' }),
 
         enterState: function() {
           Car.radioButtonView.set('isDisabled', false);
@@ -163,9 +149,7 @@ Car.statechart = SC.Statechart.create({
         }),
 
         on: SC.State.design({
-          initialSubstate: SC.HistoryState.design({
-            defaultState: 'am'
-          }),
+          initialSubstate: SC.HistoryState.design({ defaultState: 'am' }),
 
           enterState: function() {
             Car.radioButtonView.set('title', 'Radio Off');

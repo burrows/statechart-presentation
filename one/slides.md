@@ -4,6 +4,9 @@
 !SLIDE smaller
 # The Problem: How do you keep track of your application's state?
 
+!SLIDE
+# Quick Demo
+
 !SLIDE bullets incremental
 # What do we mean by _state_?
 
