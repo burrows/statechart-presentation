@@ -1,7 +1,7 @@
 To run the presentation:
 
     $ bundle install
-    $ bundle exec showoff server
+    $ bundle exec showoff serve
 
 Go to [http://localhost:9090].
 
